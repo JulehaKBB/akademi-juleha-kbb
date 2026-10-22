@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Peserta — Akademi Juleha KBB</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container dashboard">
+
+<h2>Dashboard Mentor</h2>
+<div class="menu">
+  <a href="URL_CLASSROOM">📚 Kelas Virtual</a>
+  <a href="URL_VIDEO_MASUK">🎥 Video Praktik Peserta</a>
+  <a href="URL_PENILAIAN">📝 Penilaian Video</a>
+  <a href="URL_LOGBOOK_PESERTA">📓 Logbook Peserta</a>
+  <a href="URL_VALIDASI">✅ Validasi TKU</a>
+</div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { firebaseConfig } from "./firebase-config.js";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = 'index.html'; return; }
+  const snap = await getDoc(doc(db, "users", user.uid));
+  if (!snap.exists() || snap.data().role !== 'mentor') {
+    window.location.href = 'index.html'; // atau dashboard
+    return;
+  }
+  document.getElementById('namaUser').textContent = snap.data().nama || user.displayName;
+});
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await signOut(auth);
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>

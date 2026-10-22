@@ -1,0 +1,60 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background: linear-gradient(135deg, #0b2a4a 0%, #1e5b8a 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+}
+.container {
+  background: #fff;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+}
+.logo { width: 90px; margin-bottom: 20px; }
+h1 { font-size: 22px; color: #0b2a4a; margin-bottom: 8px; }
+p.subtitle { color: #666; font-size: 14px; margin-bottom: 30px; }
+button.login-btn {
+  background: #0b2a4a;
+  color: #fff;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.3s;
+}
+button.login-btn:hover { background: #1e5b8a; }
+.dashboard { max-width: 600px; text-align: left; }
+.dashboard h2 { color: #0b2a4a; margin-bottom: 6px; }
+.dashboard .welcome { color: #666; margin-bottom: 24px; }
+.menu a {
+  display: block;
+  background: #f4f7fa;
+  padding: 14px 18px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  color: #0b2a4a;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+.menu a:hover { background: #e1ecf5; }
+button.logout-btn {
+  background: #c0392b;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+.hidden { display: none; }
+.error { color: #c0392b; margin-top: 12px; font-size: 14px; }

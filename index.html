@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Akademi Juleha KBB — Masuk</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <img src="assets/logo.png" alt="Logo PJSH" class="logo" onerror="this.style.display='none'">
+    <h1>Akademi Juleha KBB</h1>
+    <p class="subtitle">Program Unggulan PJSH DPD Kab. Bandung Barat</p>
+    <button class="login-btn" id="loginBtn">Masuk dengan Google</button>
+    <p class="error" id="errorMsg"></p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { firebaseConfig } from "./firebase-config.js";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+
+    // Jika sudah login, langsung arahkan ke dashboard
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        await redirectByRole(user);
+      }
+    });
+
+    document.getElementById('loginBtn').addEventListener('click', async () => {
+      try {
+        const result = await signInWithPopup(auth, provider);
+        await redirectByRole(result.user);
+      } catch (err) {
+        document.getElementById('errorMsg').textContent = "Gagal masuk: " + err.message;
+      }
+    });
+
+    async function redirectByRole(user) {
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        document.getElementById('errorMsg').textContent =
+          "Akun Anda belum terdaftar. Hubungi admin.";
+        await auth.signOut();
+        return;
+      }
+
+      const role = userSnap.data().role;
+      if (role === 'admin') window.location.href = 'admin.html';
+      else if (role === 'mentor') window.location.href = 'mentor.html';
+      else window.location.href = 'dashboard.html';
+    }
+  </script>
+</body>
+</html>
