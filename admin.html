@@ -3,19 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Peserta — Akademi Juleha KBB</title>
+  <title>Dashboard Admin — Akademi Juleha KBB</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Pastikan menggunakan div container dashboard -->
+  <div class="container dashboard">
+    <h2>Dashboard Admin</h2>
+    <p class="welcome">Selamat datang, <span id="namaUser">...</span></p>
 
-<h2>Dashboard Admin</h2>
-<div class="menu">
-  <a href="URL_SATU_DATA">📊 Satu Data (Google Sheets)</a>
-  <a href="URL_DAFTAR_PESERTA">👥 Daftar Peserta</a>
-  <a href="URL_PENDAFTARAN">📝 Form Pendaftaran</a>
-  <a href="URL_LAPORAN">📈 Laporan</a>
-  <a href="URL_BACKUP">💾 Backup</a>
-</div>
+    <div class="menu">
+      <a href="#" target="_blank">📊 Satu Data (Google Sheets)</a>
+      <a href="#" target="_blank">👥 Daftar Peserta</a>
+      <a href="#" target="_blank">📝 Form Pendaftaran</a>
+      <a href="#" target="_blank">📈 Laporan</a>
+      <a href="#" target="_blank">💾 Backup</a>
+    </div>
 
     <button class="logout-btn" id="logoutBtn">Keluar</button>
   </div>
@@ -30,19 +33,38 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-onAuthStateChanged(auth, async (user) => {
-  if (!user) { window.location.href = 'index.html'; return; }
-  const snap = await getDoc(doc(db, "users", user.uid));
-  if (!snap.exists() || snap.data().role !== 'mentor') {
-    window.location.href = 'index.html'; // atau dashboard
-    return;
-  }
-  document.getElementById('namaUser').textContent = snap.data().nama || user.displayName;
-});
+    // PENGECEKAN LOGIN DAN ROLE ADMIN
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        // Jika belum login, lempar ke index
+        window.location.href = 'index.html';
+        return;
+      }
+      
+      try {
+        const snap = await getDoc(doc(db, "users", user.uid));
+        
+        // PENGECEKAN ROLE: Harus 'admin'
+        if (!snap.exists() || snap.data().role !== 'admin') {
+          // Jika bukan admin, kembalikan ke index (atau ke dashboard peserta)
+          // Kita gunakan replace agar tidak bisa di-back
+          window.location.replace('index.html'); 
+          return;
+        }
+        
+        // Jika lolos, tampilkan nama
+        document.getElementById('namaUser').textContent = snap.data().nama || user.displayName;
+        
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        alert("Terjadi kesalahan sistem. Cek Console Browser.");
+      }
+    });
 
+    // TOMBOL LOGOUT
     document.getElementById('logoutBtn').addEventListener('click', async () => {
       await signOut(auth);
-      window.location.href = 'index.html';
+      window.location.replace('index.html');
     });
   </script>
 </body>
